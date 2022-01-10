@@ -1,23 +1,24 @@
 package com.solviads.cmis.business;
 
+import com.solviads.cmis.dto.*;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CmisService {
 
-    List<CmisObject> getAllCmisObjects();
-    CmisObject getCmisObjectByObjectId(ObjectId objectId);
-    Folder getFolderByObjectId(ObjectId objectId);
-    Document getDocumentByObjectId(ObjectId objectId);
-    Document createDocument(String documentName, String content, Folder hostFolder);
-    String getDocumentContentByObjectId(ObjectId objectId);
+    List<CmisObjectDto> getAllCmisObjects();
+    CmisObject getCmisObjectByObjectId(String objectId);
+    FolderDto getFolderByObjectId(String objectId);
+    DocumentDto getDocumentByObjectId(String objectId);
+    Document createDocumentText(MultipartFile multipartFile, String objectId);
+    String getDocumentContentByObjectId(String objectId);
     Folder createFolder(String folderName, Folder hostFolder);
-    void deleteObjectByObjectId(ObjectId objectId);
-    ObjectId updateDocumentContent(ObjectId objectId, String content);
-    String readDocumentByObjectId(ObjectId objectId);
+    void deleteObjectByObjectId(String objectId);
+    ObjectId updateDocumentContent(String objectId, String content);
+    String readDocumentByObjectId(String objectId);
 }

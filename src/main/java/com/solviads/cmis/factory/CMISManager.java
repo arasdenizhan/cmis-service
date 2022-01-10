@@ -45,8 +45,6 @@ public final class CMISManager {
         return sessionFactory.createSession(parameters);
     }
 
-    //TODO: uygulama açıldığında repository id ve session bilgelerini tutan map olmalı.
-    // her request geldiğinde session pool'dan session çekeceğiz.
     public List<Repository> getRepositories() {
         return sessionFactory.getRepositories(prepareDefaultSessionParameter());
     }

@@ -1,19 +1,21 @@
 package com.solviads.cmis.business;
 
+import com.solviads.cmis.constants.MIMETypes;
+import com.solviads.cmis.dto.CmisObjectDto;
+import com.solviads.cmis.dto.*;
 import com.solviads.cmis.factory.CMISManager;
 import org.apache.chemistry.opencmis.client.api.*;
+import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,24 +39,26 @@ public class CmisServiceImp implements CmisService{
     }
 
     @Override
-    public Folder getFolderByObjectId(ObjectId objectId) {
-        if(session.getObject(objectId).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(FOLDER)) {
-            return (Folder) session.getObject(objectId);
+    public FolderDto getFolderByObjectId(String objectId) {
+        ObjectId id = new ObjectIdImpl(objectId);
+        if(session.getObject(id).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(FOLDER)) {
+            return new FolderDto((Folder) session.getObject(id));
         }
         return null;
     }
 
     @Override
-    public Document getDocumentByObjectId(ObjectId objectId) {
-        if(session.getObject(objectId).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(DOCUMENT)) {
-            return (Document) session.getObject(objectId);
+    public DocumentDto getDocumentByObjectId(String objectId) {
+        ObjectId id = new ObjectIdImpl(objectId);
+        if(session.getObject(id).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(DOCUMENT)) {
+            return new DocumentDto((Document) session.getObject(id));
         }
         return null;
     }
 
     @Override
-    public String getDocumentContentByObjectId(ObjectId objectId) {
-        Document document = this.getDocumentByObjectId(objectId);
+    public String getDocumentContentByObjectId(String objectId) {
+        Document document = (Document) session.getObject(new ObjectIdImpl(objectId));
         if(document != null) {
             InputStream inputStream = document.getContentStream().getStream();
             return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
@@ -63,8 +67,9 @@ public class CmisServiceImp implements CmisService{
     }
 
     @Override
-    public void deleteObjectByObjectId(ObjectId objectId) { //this method deletes folders and documents using their objectId
-        session.delete(objectId);
+    public void deleteObjectByObjectId(String objectId) { //this method deletes folders and documents using their objectId
+        ObjectId id = new ObjectIdImpl(objectId);
+        session.delete(id);
     }
 
     @Override
@@ -76,34 +81,48 @@ public class CmisServiceImp implements CmisService{
     }
 
     @Override
-    public Document createDocument(String documentName, String content, Folder hostFolder) { //this method creates a text document in a specified folder
+    public Document createDocumentText(MultipartFile multipartFile, String objectId) { //this method creates a text document in a specified folder
+        Folder hostFolder = (Folder) session.getObject(new ObjectIdImpl(objectId));
         if(hostFolder != null) {
             Map<String, String> properties = new HashMap<>();
             properties.put(PropertyIds.OBJECT_TYPE_ID, DOCUMENT);
-            properties.put(PropertyIds.NAME, documentName);
-            byte[] buf = content.getBytes(StandardCharsets.UTF_8);
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buf);
-            ContentStream contentStream = session.getObjectFactory().createContentStream(documentName, buf.length, "text/plain", byteArrayInputStream);
-            return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
+            properties.put(PropertyIds.NAME, multipartFile.getName());
+            ByteArrayInputStream byteArrayInputStream = null;
+            try {
+                byte[] buf = multipartFile.getBytes();
+                byteArrayInputStream = new ByteArrayInputStream(buf);
+                ContentStream contentStream = session.getObjectFactory()
+                        .createContentStream(multipartFile.getName(), buf.length, String.valueOf(MIMETypes.TEXT), byteArrayInputStream);
+                return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
 
     @Override
-    public List<CmisObject> getAllCmisObjects() {
-        List<CmisObject> cmisObjects = new ArrayList<>();
-        session.getRootFolder().getChildren().iterator().forEachRemaining(cmisObjects::add);
+    public List<CmisObjectDto> getAllCmisObjects() {
+        List<CmisObjectDto> cmisObjects = new ArrayList<>();
+        for (CmisObject nextObject : session.getRootFolder().getChildren()) {
+            String propertyValue = nextObject.getPropertyValue(PropertyIds.OBJECT_TYPE_ID);
+            if (DOCUMENT.equals(propertyValue)) {
+                cmisObjects.add(new DocumentDto((Document) nextObject));
+            } else if (FOLDER.equals(propertyValue)) {
+                cmisObjects.add(new FolderDto((Folder) nextObject));
+            }
+        }
         return cmisObjects;
     }
 
     //dto verilecek. repolar içinde geçerli dto verme işlemi.
     @Override
-    public CmisObject getCmisObjectByObjectId(ObjectId objectId) {
-        return session.getObject(objectId);
+    public CmisObject getCmisObjectByObjectId(String objectId) {
+        return session.getObject(new ObjectIdImpl(objectId));
     }
 
     @Override
-    public ObjectId updateDocumentContent(ObjectId objectId, String content) {
+    public ObjectId updateDocumentContent(String objectId, String content) {
         Document document = (Document) session.getObject(objectId);
         if(document != null) {
             ObjectId newDocumentObjectId = document.checkOut(); //for updating the document's content, checkOut method will return the object id of the private working copy (pwc) of the document
@@ -118,7 +137,7 @@ public class CmisServiceImp implements CmisService{
     }
 
     @Override
-    public String readDocumentByObjectId(ObjectId objectId) {
+    public String readDocumentByObjectId(String objectId) {
         if(session.getObject(objectId).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(DOCUMENT)) {
             System.out.println(String.format("the object with %s id is a document", objectId));
             Document doc = (Document) session.getObject(objectId);
