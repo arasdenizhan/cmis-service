@@ -1,19 +1,13 @@
 package com.solviads.cmis.constants;
 
 
-public enum MIMETypes {
-    TEXT("text/plain"),
-    IMAGE_JPEG("image/jpeg"),
-    IMAGE_PNG("image/png"),
-    PDF("application/pdf");
+public class MIMETypes {
+    public static final String TEXT = "text/plain";
+    public static final String IMAGE_JPEG = "image/jpeg";
+    public static final String  IMAGE_PNG = "image/png";
+    public static final String PDF = "application/pdf";
 
-    private final String value;
-
-    MIMETypes(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
+    private MIMETypes() {
+        throw new UnsupportedOperationException();
     }
 }
