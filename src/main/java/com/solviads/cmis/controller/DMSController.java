@@ -28,8 +28,12 @@ public final class DMSController {
     }
 
     public ResponseEntity<DocumentDto> createDocument(@RequestParam MultipartFile multipartFile, @RequestParam("objectId") String objectId){
-        if(multipartFile!=null) { //TODO: multipart null da olmamalı, false de olmamalı.
-            //TODO: MIMETypes'lara göre service fonksiyonlarına gönder.
+        if(multipartFile!=null && multipartFile.isEmpty()) {
+            switch (multipartFile.getContentType()){
+                case MIMETypes.TEXT: //TODO: burası tekrar yapılacak.
+                    cmisService.createDocumentText(multipartFile, objectId);
+                    break;
+            }
         }
         return ResponseEntity.badRequest().build();
     }
