@@ -87,14 +87,34 @@ public class CmisServiceImp implements CmisService{
             Map<String, String> properties = new HashMap<>();
             properties.put(PropertyIds.OBJECT_TYPE_ID, DOCUMENT);
             properties.put(PropertyIds.NAME, multipartFile.getName());
-            ByteArrayInputStream byteArrayInputStream = null;
             try {
                 byte[] buf = multipartFile.getBytes();
-                byteArrayInputStream = new ByteArrayInputStream(buf);
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buf);
                 ContentStream contentStream = session.getObjectFactory()
-                        .createContentStream(multipartFile.getName(), buf.length, String.valueOf(MIMETypes.TEXT), byteArrayInputStream);
+                        .createContentStream(multipartFile.getName(), buf.length, MIMETypes.TEXT, byteArrayInputStream);
                 return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
             } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Document createDocumentJPEG(MultipartFile multipartFile, String objectId) {
+        Folder hostFolder = (Folder) session.getObject(new ObjectIdImpl(objectId));
+        if(hostFolder!=null){
+            Map<String, String> properties = new HashMap<>();
+            properties.put(PropertyIds.OBJECT_TYPE_ID, DOCUMENT);
+            properties.put(PropertyIds.NAME, multipartFile.getOriginalFilename());
+            try{
+                byte[] buf = multipartFile.getBytes();
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buf);
+                ContentStream contentStream = session.getObjectFactory()
+                        .createContentStream(multipartFile.getName(), buf.length, MIMETypes.IMAGE_JPEG, byteArrayInputStream);
+                return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
+            }
+            catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -109,6 +129,8 @@ public class CmisServiceImp implements CmisService{
             if (DOCUMENT.equals(propertyValue)) {
                 cmisObjects.add(new DocumentDto((Document) nextObject));
             } else if (FOLDER.equals(propertyValue)) {
+                //TODO: Child FOLDER'ların tüm child FOLDER'larını gezmemiz gerekiyor.
+                //TODO: Tüm file tree'yi yazdırmalıyız. Şu an sadece root folder yazdırıyoruz.
                 cmisObjects.add(new FolderDto((Folder) nextObject));
             }
         }

@@ -7,10 +7,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -27,13 +24,14 @@ public final class DMSController {
         this.cmisService = cmisService;
     }
 
-    public ResponseEntity<DocumentDto> createDocument(@RequestParam MultipartFile multipartFile, @RequestParam("objectId") String objectId){
-        if(multipartFile!=null && multipartFile.isEmpty()) {
-            switch (multipartFile.getContentType()){
-                case MIMETypes.TEXT: //TODO: burası tekrar yapılacak.
-                    cmisService.createDocumentText(multipartFile, objectId);
-                    break;
-            }
+    @PostMapping("/document")
+    public ResponseEntity<DocumentDto> createDocument(@RequestParam("file") MultipartFile multipartFile, @RequestParam("objectId") String objectId){
+        if(multipartFile!=null && multipartFile.getSize()>0) {
+            return switch (Objects.requireNonNull(multipartFile.getContentType(),"Content-type must not be null.")) {
+                case MIMETypes.TEXT -> new ResponseEntity<>(new DocumentDto(cmisService.createDocumentText(multipartFile, objectId)), HttpStatus.OK);
+                case MIMETypes.IMAGE_JPEG -> new ResponseEntity<>(new DocumentDto(cmisService.createDocumentJPEG(multipartFile, objectId)), HttpStatus.OK);
+                default -> ResponseEntity.badRequest().build();
+            };
         }
         return ResponseEntity.badRequest().build();
     }
