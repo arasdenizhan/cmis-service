@@ -10,16 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface CmisService {
-
     List<CmisObjectDto> getAllCmisObjects();
-    CmisObject getCmisObjectByObjectId(String objectId);
     FolderDto getFolderByObjectId(String objectId);
     DocumentDto getDocumentByObjectId(String objectId);
-    Document createDocumentText(MultipartFile multipartFile, String objectId);
-    Document createDocumentJPEG(MultipartFile multipartFile, String objectId);
+    Document createDocument(MultipartFile multipartFile, String hostFolderId);
     String getDocumentContentByObjectId(String objectId);
-    Folder createFolder(String folderName, Folder hostFolder);
-    void deleteObjectByObjectId(String objectId);
+    Folder createFolder(String folderName, String hostFolderId);
+    Boolean deleteObjectByObjectId(String objectId);
     ObjectId updateDocumentContent(String objectId, String content);
-    String readDocumentByObjectId(String objectId);
+    CmisObject updateDocumentName(String objectId, String newName);
 }
