@@ -1,7 +1,6 @@
 package com.solviads.cmis.controller;
 
 import com.solviads.cmis.business.CmisService;
-import com.solviads.cmis.constants.MIMETypes;
 import com.solviads.cmis.dto.*;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/dms")
@@ -25,13 +23,34 @@ public final class DMSController {
     }
 
     @PostMapping("/document")
-    public ResponseEntity<DocumentDto> createDocument(@RequestParam("file") MultipartFile multipartFile, @RequestParam("objectId") String objectId){
+    public ResponseEntity<DocumentDto> createDocument(@RequestParam("file") MultipartFile multipartFile, @RequestParam("hostFolderId") String hostFolderId){
         if(multipartFile!=null && multipartFile.getSize()>0) {
-            return switch (Objects.requireNonNull(multipartFile.getContentType(),"Content-type must not be null.")) {
-                case MIMETypes.TEXT -> new ResponseEntity<>(new DocumentDto(cmisService.createDocumentText(multipartFile, objectId)), HttpStatus.OK);
-                case MIMETypes.IMAGE_JPEG -> new ResponseEntity<>(new DocumentDto(cmisService.createDocumentJPEG(multipartFile, objectId)), HttpStatus.OK);
-                default -> ResponseEntity.badRequest().build();
-            };
+            return new ResponseEntity<>(new DocumentDto(cmisService.createDocument(multipartFile,hostFolderId)),HttpStatus.OK);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/folder")
+    public ResponseEntity<FolderDto> createFolder(@RequestParam("folderName") String folderName, @RequestParam("hostFolderId") String hostFolderId){
+        if(!folderName.isEmpty() && !hostFolderId.isEmpty()) {
+            return new ResponseEntity<>(new FolderDto(cmisService.createFolder(folderName,hostFolderId)),HttpStatus.OK);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteObjectById(@RequestParam("objectId") String objectId){
+        //TODO: multiFiled döküman tekrardan düşünülücek.
+        if(!objectId.isEmpty() && cmisService.deleteObjectByObjectId(objectId)){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping("/update-object")
+    public ResponseEntity<CmisObjectDto> updateObjectById(@RequestParam("objectId") String objectId, @RequestParam("name") String name){
+        if(!objectId.isEmpty()){
+            return new ResponseEntity<>(new CmisObjectDto(cmisService.updateDocumentName(objectId,name)),HttpStatus.OK);
         }
         return ResponseEntity.badRequest().build();
     }

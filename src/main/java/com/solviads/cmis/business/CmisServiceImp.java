@@ -57,6 +57,38 @@ public class CmisServiceImp implements CmisService{
     }
 
     @Override
+    public Document createDocument(MultipartFile multipartFile, String hostFolderId) {
+        Folder hostFolder = (Folder) session.getObject(new ObjectIdImpl(hostFolderId));
+        if(hostFolder != null) {
+            String originalFilename = multipartFile.getOriginalFilename();
+            try{
+                Objects.requireNonNull(originalFilename,"Filename must not be null.");
+            } catch (NullPointerException e){
+                return null;
+            }
+            Map<String, String> properties = new HashMap<>();
+            properties.put(PropertyIds.OBJECT_TYPE_ID, DOCUMENT);
+            properties.put(PropertyIds.NAME, originalFilename.substring(originalFilename.lastIndexOf("/")+1));
+            try {
+                byte[] buf = multipartFile.getBytes();
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buf);
+                String contentType = Objects.requireNonNull(multipartFile.getContentType(), "Content-type must not be null.");
+                if (MIMETypes.TEXT.equals(contentType)) {
+                    ContentStream contentStream = session.getObjectFactory().createContentStream(multipartFile.getName(), buf.length, MIMETypes.TEXT, byteArrayInputStream);
+                    return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
+                }
+                else if (MIMETypes.IMAGE_JPEG.equals(contentType)) {
+                    ContentStream contentStream = session.getObjectFactory().createContentStream(multipartFile.getName(), buf.length, MIMETypes.IMAGE_JPEG, byteArrayInputStream);
+                    return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
+                }
+            } catch (IOException | NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
     public String getDocumentContentByObjectId(String objectId) {
         Document document = (Document) session.getObject(new ObjectIdImpl(objectId));
         if(document != null) {
@@ -67,58 +99,21 @@ public class CmisServiceImp implements CmisService{
     }
 
     @Override
-    public void deleteObjectByObjectId(String objectId) { //this method deletes folders and documents using their objectId
-        ObjectId id = new ObjectIdImpl(objectId);
-        session.delete(id);
+    public Boolean deleteObjectByObjectId(String objectId) {
+        if(session.exists(objectId)){
+            session.delete(new ObjectIdImpl(objectId));
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public Folder createFolder(String folderName, Folder hostFolder) { //this method creates a new folder in a specified folder
+    public Folder createFolder(String folderName, String hostFolderId) { //this method creates a new folder in a specified folder
+        Folder hostFolder = (Folder) session.getObject(new ObjectIdImpl(hostFolderId));
         Map<String, String> properties = new HashMap<>();
         properties.put(PropertyIds.OBJECT_TYPE_ID, FOLDER);
         properties.put(PropertyIds.NAME, folderName);
         return hostFolder.createFolder(properties);
-    }
-
-    @Override
-    public Document createDocumentText(MultipartFile multipartFile, String objectId) { //this method creates a text document in a specified folder
-        Folder hostFolder = (Folder) session.getObject(new ObjectIdImpl(objectId));
-        if(hostFolder != null) {
-            Map<String, String> properties = new HashMap<>();
-            properties.put(PropertyIds.OBJECT_TYPE_ID, DOCUMENT);
-            properties.put(PropertyIds.NAME, multipartFile.getName());
-            try {
-                byte[] buf = multipartFile.getBytes();
-                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buf);
-                ContentStream contentStream = session.getObjectFactory()
-                        .createContentStream(multipartFile.getName(), buf.length, MIMETypes.TEXT, byteArrayInputStream);
-                return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Document createDocumentJPEG(MultipartFile multipartFile, String objectId) {
-        Folder hostFolder = (Folder) session.getObject(new ObjectIdImpl(objectId));
-        if(hostFolder!=null){
-            Map<String, String> properties = new HashMap<>();
-            properties.put(PropertyIds.OBJECT_TYPE_ID, DOCUMENT);
-            properties.put(PropertyIds.NAME, multipartFile.getOriginalFilename());
-            try{
-                byte[] buf = multipartFile.getBytes();
-                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buf);
-                ContentStream contentStream = session.getObjectFactory()
-                        .createContentStream(multipartFile.getName(), buf.length, MIMETypes.IMAGE_JPEG, byteArrayInputStream);
-                return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
     @Override
@@ -137,12 +132,6 @@ public class CmisServiceImp implements CmisService{
         return cmisObjects;
     }
 
-    //dto verilecek. repolar içinde geçerli dto verme işlemi.
-    @Override
-    public CmisObject getCmisObjectByObjectId(String objectId) {
-        return session.getObject(new ObjectIdImpl(objectId));
-    }
-
     @Override
     public ObjectId updateDocumentContent(String objectId, String content) {
         Document document = (Document) session.getObject(objectId);
@@ -159,14 +148,15 @@ public class CmisServiceImp implements CmisService{
     }
 
     @Override
-    public String readDocumentByObjectId(String objectId) {
-        if(session.getObject(objectId).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(DOCUMENT)) {
-            System.out.println(String.format("the object with %s id is a document", objectId));
-            Document doc = (Document) session.getObject(objectId);
-            InputStream stream = doc.getContentStream().getStream();
-            return new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
+    public CmisObject updateDocumentName(String objectId, String newName) {
+        if(session.exists(objectId)){
+            Map<String, String> properties = new HashMap<>();
+            CmisObject object = session.getObject(objectId);
+            object.getProperties().forEach(property -> properties.put(property.getId(),property.getValueAsString()));
+            properties.replace(PropertyIds.NAME,newName);
+            return object.updateProperties(properties);
         }
-        System.out.println(String.format("the object with %s id is not a document", objectId));
         return null;
     }
+
 }
