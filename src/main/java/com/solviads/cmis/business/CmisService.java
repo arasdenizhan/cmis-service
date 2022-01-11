@@ -16,6 +16,7 @@ public interface CmisService {
     FolderDto getFolderByObjectId(String objectId);
     DocumentDto getDocumentByObjectId(String objectId);
     Document createDocumentText(MultipartFile multipartFile, String objectId);
+    Document createDocumentJPEG(MultipartFile multipartFile, String objectId);
     String getDocumentContentByObjectId(String objectId);
     Folder createFolder(String folderName, Folder hostFolder);
     void deleteObjectByObjectId(String objectId);
