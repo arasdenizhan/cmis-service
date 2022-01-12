@@ -19,6 +19,8 @@ spec:
           image: index.docker.io/solviadscom/cmis-service:latest # Specify your image {registry FQN/your-username/your-space/image-name:image-version}.
           ports:
             - containerPort: 9091 # Specify the port to your image.
+      imagePullSecrets:
+              - name: docker-registry-secret # Specify the same Secret name you generated in the previous step for this Namespace.
 ---
 apiVersion: v1
 kind: Service
