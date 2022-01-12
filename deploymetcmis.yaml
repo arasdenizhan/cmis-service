@@ -2,36 +2,36 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: keymaker-dev # {production/stage/qa}
-  name: kyma-cmis-test  # Specify the deployment name.
+  name: cmis-service  # Specify the deployment name.
 spec:
   replicas: 1 # Specify your replica - how many instances you want from that deployment.
   selector:
     matchLabels:
-      app: kyma-cmis-test  # Specify the app label. It is optional but it is a good practice.
+      app: cmis-service  # Specify the app label. It is optional but it is a good practice.
   template:
     metadata:
       labels:
-        app: kyma-cmis-test # Specify app label. It is optional but it is a good practice.
+        app: cmis-service # Specify app label. It is optional but it is a good practice.
         version: v1 # Specify your version.
     spec:
       containers:
-        - name: kyma-cmis-test # Specify a meaningful container name.
-          image: index.docker.io/denzhn/kyma-cmis-test:0.0.3 # Specify your image {registry FQN/your-username/your-space/image-name:image-version}.
+        - name: cmis-service # Specify a meaningful container name.
+          image: index.docker.io/solviadscom/cmis-service:latest # Specify your image {registry FQN/your-username/your-space/image-name:image-version}.
           ports:
             - containerPort: 9091 # Specify the port to your image.
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: kyma-cmis-test
+  name: cmis-service
   namespace: keymaker-dev
   labels:
-    app: kyma-cmis-test
+    app: cmis-service
 spec:
   ports:
     - name: http
       port: 9091
   selector:
-    app: kyma-cmis-test
+    app: cmis-service
 ---
 
