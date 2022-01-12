@@ -72,15 +72,9 @@ public class CmisServiceImp implements CmisService{
             try {
                 byte[] buf = multipartFile.getBytes();
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buf);
-                String contentType = Objects.requireNonNull(multipartFile.getContentType(), "Content-type must not be null.");
-                if (MIMETypes.TEXT.equals(contentType)) {
-                    ContentStream contentStream = session.getObjectFactory().createContentStream(multipartFile.getName(), buf.length, MIMETypes.TEXT, byteArrayInputStream);
-                    return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
-                }
-                else if (MIMETypes.IMAGE_JPEG.equals(contentType)) {
-                    ContentStream contentStream = session.getObjectFactory().createContentStream(multipartFile.getName(), buf.length, MIMETypes.IMAGE_JPEG, byteArrayInputStream);
-                    return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
-                }
+                String mimeType = Objects.requireNonNull(multipartFile.getContentType(), "Content-type must not be null.");
+                ContentStream contentStream = session.getObjectFactory().createContentStream(multipartFile.getName(), buf.length, mimeType, byteArrayInputStream);
+                return hostFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
             } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
             }
