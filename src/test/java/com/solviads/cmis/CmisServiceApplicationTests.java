@@ -25,20 +25,24 @@ import java.util.stream.Collectors;
 @SpringBootTest
 class CmisServiceApplicationTests {
 
-//    @Autowired
-//    CMISManager cmisManager;
-//    @Autowired
-//    CmisServiceImp cmisService;
-//
-//    private final Logger logger = Logger.getLogger(CmisServiceApplicationTests.class.getName());
-//
-//    @Test
-//    void shouldGetRepositories_successfully() {
-//        List<Repository> repositories = cmisManager.getRepositories();
-//        Assertions.assertThat(repositories.size()).isEqualTo(1);
-//        Repository repository = repositories.get(0);
-//        logger.info(String.format("repository name: %s\nproduct name: %s\nvendor name: %s", repository.getName(), repository.getProductName(), repository.getVendorName()));
-//    }
+    @Autowired
+    CMISManager cmisManager;
+    @Autowired
+    CmisServiceImp cmisService;
+
+    private final Logger logger = Logger.getLogger(CmisServiceApplicationTests.class.getName());
+
+    @Test
+    void shouldGetRepositories_successfully() {
+        List<Repository> repositories = cmisManager.getRepositories();
+        Assertions.assertThat(repositories.size()).isEqualTo(1);
+        Repository repository = repositories.get(0);
+        logger.info("ID: " + repository.createSession().getRootFolder().getId());
+        logger.info(String.format("repository name: %s\nproduct name: %s\nvendor name: %s", repository.getName(), repository.getProductName(), repository.getVendorName()));
+    }
+
+    void testFunc(){
+    }
 //
 //    @Test
 //    void shouldGetObjects_successfully() {

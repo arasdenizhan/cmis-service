@@ -15,12 +15,12 @@ spec:
         version: v1 # Specify your version.
     spec:
       containers:
-        - name: cmis-service # Specify a meaningful container name.
-          image: index.docker.io/solviadscom/cmis-service:latest # Specify your image {registry FQN/your-username/your-space/image-name:image-version}.
-          ports:
-            - containerPort: 9091 # Specify the port to your image.
+      - name: cmis-service
+        image: solviadscom/cmis-service:0.0.4
+        ports:
+        - containerPort: 9091
       imagePullSecrets:
-              - name: docker-registry-secret # Specify the same Secret name you generated in the previous step for this Namespace.
+      - name: ardas-docker-secret
 ---
 apiVersion: v1
 kind: Service
