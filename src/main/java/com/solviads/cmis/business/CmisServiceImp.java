@@ -1,6 +1,5 @@
 package com.solviads.cmis.business;
 
-import com.solviads.cmis.constants.MIMETypes;
 import com.solviads.cmis.dto.CmisObjectDto;
 import com.solviads.cmis.dto.*;
 import com.solviads.cmis.factory.CMISManager;
@@ -16,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,23 +23,37 @@ public class CmisServiceImp implements CmisService{
 
     private static final String DOCUMENT = "cmis:document";
     private static final String FOLDER = "cmis:folder";
-    private static final String SAP_REPOSITORY_ID = "476931f0-daee-4867-8834-9e7130c5eb41"; //sorulacak.
+    private static final String SAP_REPOSITORY_ID = "476931f0-daee-4867-8834-9e7130c5eb41";
+
+    private static final Logger logger = Logger.getLogger(CmisServiceImp.class.getName());
 
     private final Map<String, Session> sessionPool = new HashMap<>();
     private final CMISManager cmisManager;
-    private final Session session;
-    private QueryStatement queryStatement;
+    private Session session;
+    private QueryStatement queryStatement; //query can be used later.
 
     @Autowired
     public CmisServiceImp(CMISManager cmisManager) {
         this.cmisManager = cmisManager;
+        getSessionPool();
+    }
+
+    @Override
+    public void getSessionPool() {
         cmisManager.getRepositories().forEach(repository -> sessionPool.put(repository.getId(), cmisManager.openSession(repository.getId())));
         session = sessionPool.get(SAP_REPOSITORY_ID);
         session.getDefaultContext().setCacheEnabled(true);
     }
 
+    private void checkTokenForNewSessionPool(){
+        if(cmisManager.checkTokenExpiration()){
+            getSessionPool();
+        }
+    }
+
     @Override
     public FolderDto getFolderByObjectId(String objectId) {
+        checkTokenForNewSessionPool();
         ObjectId id = new ObjectIdImpl(objectId);
         if(session.getObject(id).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(FOLDER)) {
             return new FolderDto((Folder) session.getObject(id));
@@ -49,6 +63,7 @@ public class CmisServiceImp implements CmisService{
 
     @Override
     public DocumentDto getDocumentByObjectId(String objectId) {
+        checkTokenForNewSessionPool();
         ObjectId id = new ObjectIdImpl(objectId);
         if(session.getObject(id).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(DOCUMENT)) {
             return new DocumentDto((Document) session.getObject(id));
@@ -57,7 +72,20 @@ public class CmisServiceImp implements CmisService{
     }
 
     @Override
+    public ReturnFileDto getDocumentContent(String objectId) {
+        try {
+            Document document = (Document) session.getObject(new ObjectIdImpl(objectId));
+            ContentStream contentStream = document.getContentStream();
+            return new ReturnFileDto(contentStream.getMimeType(), contentStream.getStream().readAllBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public Document createDocument(MultipartFile multipartFile, String hostFolderId) {
+        checkTokenForNewSessionPool();
         Folder hostFolder = (Folder) session.getObject(new ObjectIdImpl(hostFolderId));
         if(hostFolder != null) {
             String originalFilename = multipartFile.getOriginalFilename();
@@ -84,6 +112,7 @@ public class CmisServiceImp implements CmisService{
 
     @Override
     public String getDocumentContentByObjectId(String objectId) {
+        checkTokenForNewSessionPool();
         Document document = (Document) session.getObject(new ObjectIdImpl(objectId));
         if(document != null) {
             InputStream inputStream = document.getContentStream().getStream();
@@ -94,6 +123,7 @@ public class CmisServiceImp implements CmisService{
 
     @Override
     public Boolean deleteObjectByObjectId(String objectId) {
+        checkTokenForNewSessionPool();
         if(session.exists(objectId)){
             session.delete(new ObjectIdImpl(objectId));
             return true;
@@ -103,6 +133,7 @@ public class CmisServiceImp implements CmisService{
 
     @Override
     public Folder createFolder(String folderName, String hostFolderId) { //this method creates a new folder in a specified folder
+        checkTokenForNewSessionPool();
         Folder hostFolder = (Folder) session.getObject(new ObjectIdImpl(hostFolderId));
         Map<String, String> properties = new HashMap<>();
         properties.put(PropertyIds.OBJECT_TYPE_ID, FOLDER);
@@ -112,6 +143,7 @@ public class CmisServiceImp implements CmisService{
 
     @Override
     public List<CmisObjectDto> getAllCmisObjects() {
+        checkTokenForNewSessionPool();
         List<CmisObjectDto> cmisObjects = new ArrayList<>();
         for (CmisObject nextObject : session.getRootFolder().getChildren()) {
             String propertyValue = nextObject.getPropertyValue(PropertyIds.OBJECT_TYPE_ID);
@@ -128,6 +160,7 @@ public class CmisServiceImp implements CmisService{
 
     @Override
     public ObjectId updateDocumentContent(String objectId, String content) {
+        checkTokenForNewSessionPool();
         Document document = (Document) session.getObject(objectId);
         if(document != null) {
             ObjectId newDocumentObjectId = document.checkOut(); //for updating the document's content, checkOut method will return the object id of the private working copy (pwc) of the document
@@ -143,6 +176,7 @@ public class CmisServiceImp implements CmisService{
 
     @Override
     public CmisObject updateDocumentName(String objectId, String newName) {
+        checkTokenForNewSessionPool();
         if(session.exists(objectId)){
             Map<String, String> properties = new HashMap<>();
             CmisObject object = session.getObject(objectId);

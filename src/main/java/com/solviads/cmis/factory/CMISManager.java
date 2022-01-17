@@ -76,4 +76,8 @@ public final class CMISManager {
         }
     }
 
+    public boolean checkTokenExpiration(){
+        return tokenParameter.isTokenExpired();
+    }
+
 }

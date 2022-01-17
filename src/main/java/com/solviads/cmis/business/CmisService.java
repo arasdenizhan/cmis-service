@@ -8,11 +8,14 @@ import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CmisService {
+    void getSessionPool();
     List<CmisObjectDto> getAllCmisObjects();
     FolderDto getFolderByObjectId(String objectId);
     DocumentDto getDocumentByObjectId(String objectId);
+    ReturnFileDto getDocumentContent(String objectId);
     Document createDocument(MultipartFile multipartFile, String hostFolderId);
     String getDocumentContentByObjectId(String objectId);
     Folder createFolder(String folderName, String hostFolderId);
