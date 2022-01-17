@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: cmis-service
-        image: solviadscom/cmis-service:0.0.4
+        image: solviadscom/cmis-service:0.0.5
         ports:
         - containerPort: 9091
       imagePullSecrets:

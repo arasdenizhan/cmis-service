@@ -4,12 +4,19 @@ import com.solviads.cmis.business.CmisService;
 import com.solviads.cmis.dto.*;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.yaml.snakeyaml.util.ArrayUtils;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dms")
@@ -41,7 +48,7 @@ public final class DMSController {
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteObjectById(@RequestParam("objectId") String objectId){
         //TODO: multiFiled döküman tekrardan düşünülücek.
-        if(!objectId.isEmpty() && cmisService.deleteObjectByObjectId(objectId)){
+        if(!objectId.isEmpty() && Boolean.TRUE.equals(cmisService.deleteObjectByObjectId(objectId))){
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
@@ -63,10 +70,23 @@ public final class DMSController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/document")
+    @GetMapping(value = "/document")
     public ResponseEntity<DocumentDto> getDocumentById(@RequestParam("objectId") String objectId){
         if(!Strings.isEmpty(objectId)){
             return new ResponseEntity<>(cmisService.getDocumentByObjectId(objectId), HttpStatus.OK);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping(value = "/document-content")
+    public ResponseEntity<byte[]> getDocumentContentById(@RequestParam("objectId") String objectId){
+        if(!Strings.isEmpty(objectId)){
+            ReturnFileDto fileDto = cmisService.getDocumentContent(objectId);
+            if(fileDto!=null){
+                MultiValueMap<String,String> httpHeaders = new HttpHeaders();
+                httpHeaders.put(HttpHeaders.CONTENT_TYPE, List.of(fileDto.getMimeType()));
+                return new ResponseEntity<>(fileDto.getContent(),httpHeaders,HttpStatus.OK);
+            }
         }
         return ResponseEntity.badRequest().build();
     }
