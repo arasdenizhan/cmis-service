@@ -8,7 +8,6 @@ import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CmisService {
     void getSessionPool();

@@ -40,6 +40,7 @@ public class CmisServiceImp implements CmisService{
 
     @Override
     public void getSessionPool() {
+        sessionPool.clear();
         cmisManager.getRepositories().forEach(repository -> sessionPool.put(repository.getId(), cmisManager.openSession(repository.getId())));
         session = sessionPool.get(SAP_REPOSITORY_ID);
         session.getDefaultContext().setCacheEnabled(true);
@@ -73,6 +74,7 @@ public class CmisServiceImp implements CmisService{
 
     @Override
     public ReturnFileDto getDocumentContent(String objectId) {
+        checkTokenForNewSessionPool();
         try {
             Document document = (Document) session.getObject(new ObjectIdImpl(objectId));
             ContentStream contentStream = document.getContentStream();
