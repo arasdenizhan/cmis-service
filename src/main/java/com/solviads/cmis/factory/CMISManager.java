@@ -52,8 +52,8 @@ public final class CMISManager {
     private Map<String, String> prepareDefaultSessionParameter() {
         prepareToken();
         var sessionParameters = new HashMap<String, String>();
-        sessionParameters.put(SessionParameter.OAUTH_ACCESS_TOKEN, tokenParameter.token());
-        sessionParameters.put(SessionParameter.OAUTH_REFRESH_TOKEN, tokenParameter.refreshToken());
+        sessionParameters.put(SessionParameter.OAUTH_ACCESS_TOKEN, tokenParameter.getToken());
+        sessionParameters.put(SessionParameter.OAUTH_REFRESH_TOKEN, tokenParameter.getRefreshToken());
         sessionParameters.put(SessionParameter.AUTH_OAUTH_BEARER, Boolean.TRUE.toString());
         sessionParameters.put(SessionParameter.AUTH_HTTP_BASIC, Boolean.FALSE.toString());
         sessionParameters.put(SessionParameter.BROWSER_URL, cmisRepositoryPropertiesConfiguration.getUri());
