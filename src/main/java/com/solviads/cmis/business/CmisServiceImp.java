@@ -23,7 +23,7 @@ public class CmisServiceImp implements CmisService{
 
     private static final String DOCUMENT = "cmis:document";
     private static final String FOLDER = "cmis:folder";
-    private static final String SAP_REPOSITORY_ID = "476931f0-daee-4867-8834-9e7130c5eb41";
+    private static final String SAP_REPOSITORY_ID = "91d575f6-84ce-4ad9-8d42-7277fb0b7862";
 
     private static final Logger logger = Logger.getLogger(CmisServiceImp.class.getName());
 

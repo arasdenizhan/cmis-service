@@ -35,10 +35,8 @@ class CmisServiceApplicationTests {
     @Test
     void shouldGetRepositories_successfully() {
         List<Repository> repositories = cmisManager.getRepositories();
-        Assertions.assertThat(repositories.size()).isEqualTo(1);
-        Repository repository = repositories.get(0);
-        logger.info("ID: " + repository.createSession().getRootFolder().getId());
-        logger.info(String.format("repository name: %s\nproduct name: %s\nvendor name: %s", repository.getName(), repository.getProductName(), repository.getVendorName()));
+        Assertions.assertThat(repositories.size()).isEqualTo(2);
+        repositories.forEach(repository -> logger.info("Repository Name: " + repository.getName()));
     }
 
     void testFunc(){
