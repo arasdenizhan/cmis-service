@@ -1,0 +1,34 @@
+{
+    "uri": "https://api-sdm-di.cfapps.eu20.hana.ondemand.com/",
+    "endpoints": {
+        "ecmservice": {
+            "url": "https://api-sdm-di.cfapps.eu20.hana.ondemand.com/",
+            "timeout": 900000
+        },
+        "migrationservice": {
+            "url": "https://sdm-migration.cfapps.eu20.hana.ondemand.com"
+        }
+    },
+    "sap.cloud.service": "com.sap.ecm.reuse",
+    "saasregistryenabled": true,
+    "html5-apps-repo": {
+        "app_host_id": "8a07a2a5-fea9-469b-8458-4c2e0ee21bf3"
+    },
+    "uaa": {
+        "tenantmode": "dedicated",
+        "sburl": "https://internal-xsuaa.authentication.eu20.hana.ondemand.com",
+        "subaccountid": "5c789245-2b36-457a-b72a-cd0c092badce",
+        "credential-type": "instance-secret",
+        "clientid": "sb-68d4c605-f7cb-4665-82c3-a61bdbd894b7!b6782|sdm-di-DocumentManagement-sdm_integration!b873",
+        "xsappname": "68d4c605-f7cb-4665-82c3-a61bdbd894b7!b6782|sdm-di-DocumentManagement-sdm_integration!b873",
+        "clientsecret": "VkJT8bvHbCMooGXBYYTnsvpB51E=",
+        "url": "https://kyma.authentication.eu20.hana.ondemand.com",
+        "uaadomain": "authentication.eu20.hana.ondemand.com",
+        "verificationkey": "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0vNauGFT3ROn9PzZgs3lnWz4EQ33OCSJTdjqr7LaKu8HOtW2AK20Z+fW57+AVdgTvJHa6IV11fLYeKL2cgYf8wRUzRn58HOXfhI9O4XFYu1tmT8rDaq4iu0NZ3y0qBvdtIX3FyNbwf0Bm6e1Qie6qSBR3ios57j0DBsOCFon5X+TfOOQr9JRXMyIMH6sG8o1d3BGxfxcTO3aOlrQcWeNtlog1yRW7A0SMsYa7P56t0qBOpUdaO6+S16fKqejYkgfKAjrHj3+Wz823ym4I8T56+Rk6m773VV5UmDlS7Vgnn4pQsfBpwwM4Xvvo4Xr7FNs8TB8vcKi0fEqf7p6gzoBswIDAQAB-----END PUBLIC KEY-----",
+        "apiurl": "https://api.authentication.eu20.hana.ondemand.com",
+        "identityzone": "kyma",
+        "identityzoneid": "5c789245-2b36-457a-b72a-cd0c092badce",
+        "tenantid": "5c789245-2b36-457a-b72a-cd0c092badce",
+        "zoneid": "5c789245-2b36-457a-b72a-cd0c092badce"
+    }
+}
