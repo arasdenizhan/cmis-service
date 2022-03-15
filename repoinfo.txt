@@ -1,0 +1,259 @@
+{
+    "91d575f6-84ce-4ad9-8d42-7277fb0b7862": {
+        "repositoryId": "91d575f6-84ce-4ad9-8d42-7277fb0b7862",
+        "repositoryName": "SAP Community",
+        "repositoryDescription": "SAP Community",
+        "vendorName": "SAP AG",
+        "productName": "SAP Document Management Service",
+        "productVersion": "1.0",
+        "rootFolderId": "3030c470002e4d216d470326",
+        "capabilities": {
+            "capabilityContentStreamUpdatability": "pwconly",
+            "capabilityChanges": "objectidsonly",
+            "capabilityRenditions": "none",
+            "capabilityGetDescendants": true,
+            "capabilityGetFolderTree": true,
+            "capabilityMultifiling": false,
+            "capabilityUnfiling": false,
+            "capabilityVersionSpecificFiling": false,
+            "capabilityPWCSearchable": false,
+            "capabilityPWCUpdatable": true,
+            "capabilityAllVersionsSearchable": false,
+            "capabilityOrderBy": "custom",
+            "capabilityQuery": "metadataonly",
+            "capabilityJoin": "none",
+            "capabilityACL": "manage",
+            "capabilityCreatablePropertyTypes": {
+                "canCreate": [
+                    "boolean",
+                    "id",
+                    "integer",
+                    "datetime",
+                    "decimal",
+                    "html",
+                    "string",
+                    "uri"
+                ]
+            },
+            "capabilityNewTypeSettableAttributes": {
+                "id": true,
+                "localName": true,
+                "localNamespace": true,
+                "displayName": true,
+                "queryName": false,
+                "description": true,
+                "creatable": true,
+                "fileable": false,
+                "queryable": true,
+                "fulltextIndexed": true,
+                "includedInSupertypeQuery": true,
+                "controllablePolicy": false,
+                "controllableACL": false
+            }
+        },
+        "aclCapabilities": {
+            "supportedPermissions": "both",
+            "propagation": "propagate",
+            "permissions": [
+                {
+                    "permission": "cmis:read",
+                    "description": "cmis:read"
+                },
+                {
+                    "permission": "sap:file",
+                    "description": "sap:file"
+                },
+                {
+                    "permission": "cmis:write",
+                    "description": "cmis:write"
+                },
+                {
+                    "permission": "sap:delete",
+                    "description": "sap:delete"
+                },
+                {
+                    "permission": "cmis:all",
+                    "description": "cmis:all"
+                }
+            ],
+            "permissionMapping": [
+                {
+                    "key": "canUpdateProperties.Object",
+                    "permission": [
+                        "cmis:write"
+                    ]
+                },
+                {
+                    "key": "canGetProperties.Object",
+                    "permission": [
+                        "cmis:read"
+                    ]
+                },
+                {
+                    "key": "canCreateFolder.Folder",
+                    "permission": [
+                        "sap:file",
+                        "cmis:write"
+                    ]
+                },
+                {
+                    "key": "canCreateDocument.Folder",
+                    "permission": [
+                        "sap:file",
+                        "cmis:write"
+                    ]
+                },
+                {
+                    "key": "canCheckout.Document",
+                    "permission": [
+                        "cmis:write"
+                    ]
+                },
+                {
+                    "key": "canMove.Object",
+                    "permission": [
+                        "sap:file",
+                        "cmis:write"
+                    ]
+                },
+                {
+                    "key": "canGetAllVersions.VersionSeries",
+                    "permission": [
+                        "cmis:read"
+                    ]
+                },
+                {
+                    "key": "canCheckin.Document",
+                    "permission": [
+                        "sap:delete",
+                        "cmis:all"
+                    ]
+                },
+                {
+                    "key": "canGetDescendents.Folder",
+                    "permission": [
+                        "cmis:read"
+                    ]
+                },
+                {
+                    "key": "canGetChildren.Folder",
+                    "permission": [
+                        "cmis:read"
+                    ]
+                },
+                {
+                    "key": "canGetParents.Folder",
+                    "permission": [
+                        "cmis:read"
+                    ]
+                },
+                {
+                    "key": "canSetContent.Document",
+                    "permission": [
+                        "cmis:write"
+                    ]
+                },
+                {
+                    "key": "canDeleteContent.Document",
+                    "permission": [
+                        "cmis:write"
+                    ]
+                },
+                {
+                    "key": "canGetACL.Object",
+                    "permission": [
+                        "cmis:read"
+                    ]
+                },
+                {
+                    "key": "canMove.Target",
+                    "permission": [
+                        "sap:file",
+                        "cmis:write"
+                    ]
+                },
+                {
+                    "key": "canDelete.Object",
+                    "permission": [
+                        "sap:delete",
+                        "cmis:all"
+                    ]
+                },
+                {
+                    "key": "canCancelCheckout.Document",
+                    "permission": [
+                        "sap:delete",
+                        "cmis:all"
+                    ]
+                },
+                {
+                    "key": "canApplyACL.Object",
+                    "permission": [
+                        "cmis:all"
+                    ]
+                },
+                {
+                    "key": "canGetFolderParent.Object",
+                    "permission": [
+                        "cmis:read"
+                    ]
+                },
+                {
+                    "key": "canMove.Source",
+                    "permission": [
+                        "sap:file",
+                        "cmis:write"
+                    ]
+                },
+                {
+                    "key": "canDeleteTree.Folder",
+                    "permission": [
+                        "sap:delete",
+                        "cmis:all"
+                    ]
+                }
+            ]
+        },
+        "latestChangeLogToken": null,
+        "cmisVersionSupported": "1.1",
+        "changesIncomplete": false,
+        "changesOnType": [
+            "cmis:document",
+            "cmis:folder"
+        ],
+        "principalIdAnonymous": "{sap:builtin}anonymous",
+        "principalIdAnyone": "{sap:builtin}everyone",
+        "extendedFeatures": [
+            {
+                "id": "ecmRepoInfo",
+                "featureData": {
+                    "virusScanner": "false",
+                    "disableVirusScannerForLargeFile": "false",
+                    "changeLog": "Enabled",
+                    "changeLogDuration": "24",
+                    "hashAlgorithms": ""
+                }
+            },
+            {
+                "id": "http://docs.oasis-open.org/ns/cmis/extension/datetimeformat",
+                "url": "https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=cmis",
+                "commonName": "Browser Binding DateTime Format",
+                "versionLabel": "1.0",
+                "description": "Adds an additional DateTime format for the Browser Binding."
+            },
+            {
+                "id": "http://docs.oasis-open.org/ns/cmis/extension/datetimeformat",
+                "url": "https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=cmis",
+                "commonName": "Browser Binding DateTime Format",
+                "versionLabel": "1.0",
+                "description": "Adds an additional DateTime format for the Browser Binding."
+            }
+        ],
+        "repositoryUrl": "https://api-sdm-di.cfapps.eu20.hana.ondemand.com/browser/91d575f6-84ce-4ad9-8d42-7277fb0b7862",
+        "rootFolderUrl": "https://api-sdm-di.cfapps.eu20.hana.ondemand.com/browser/91d575f6-84ce-4ad9-8d42-7277fb0b7862/root",
+        "cmisRepositoryId": "3030c470002e4d216d470326",
+        "repositoryCategory": "Instant",
+        "externalId": null,
+        "connectionType": "service"
+    }
+}
