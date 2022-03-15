@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: keymaker-dev # {production/stage/qa}
+  namespace: default # {production/stage/qa}
   name: cmis-service  # Specify the deployment name.
 spec:
   replicas: 1 # Specify your replica - how many instances you want from that deployment.
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: cmis-service
-        image: solviadscom/cmis-service:0.0.9
+        image: solviadscom/cmis-service:0.1.0
         ports:
         - containerPort: 9091
       imagePullSecrets:
@@ -26,7 +26,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: cmis-service
-  namespace: keymaker-dev
+  namespace: default
   labels:
     app: cmis-service
 spec:
