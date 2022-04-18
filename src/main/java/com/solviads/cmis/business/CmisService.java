@@ -21,4 +21,7 @@ public interface CmisService {
     Boolean deleteObjectByObjectId(String objectId);
     ObjectId updateDocumentContent(String objectId, String content);
     CmisObject updateDocumentName(String objectId, String newName);
+    List<CmisObjectDto> testGetAllObjects();
+    FolderDto testGetFolderByObjectId(String objectId);
+    DocumentDto testGetDocumentByObjectId(String objectId);
 }

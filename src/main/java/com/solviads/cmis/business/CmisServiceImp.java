@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ public class CmisServiceImp implements CmisService{
     private static final String DOCUMENT = "cmis:document";
     private static final String FOLDER = "cmis:folder";
     private static final String SAP_REPOSITORY_ID = "91d575f6-84ce-4ad9-8d42-7277fb0b7862";
+    private static final String TEST_REPOSITORY_ID = "ZDMS";
 
     private static final Logger logger = Logger.getLogger(CmisServiceImp.class.getName());
 
@@ -31,6 +33,8 @@ public class CmisServiceImp implements CmisService{
     private final CMISManager cmisManager;
     private Session session;
     private QueryStatement queryStatement; //query can be used later.
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss");
 
     @Autowired
     public CmisServiceImp(CMISManager cmisManager) {
@@ -42,7 +46,7 @@ public class CmisServiceImp implements CmisService{
     public void getSessionPool() {
         sessionPool.clear();
         cmisManager.getRepositories().forEach(repository -> sessionPool.put(repository.getId(), cmisManager.openSession(repository.getId())));
-        session = sessionPool.get(SAP_REPOSITORY_ID);
+        session = sessionPool.get(TEST_REPOSITORY_ID);
         session.getDefaultContext().setCacheEnabled(true);
     }
 
@@ -152,8 +156,6 @@ public class CmisServiceImp implements CmisService{
             if (DOCUMENT.equals(propertyValue)) {
                 cmisObjects.add(new DocumentDto((Document) nextObject));
             } else if (FOLDER.equals(propertyValue)) {
-                //TODO: Child FOLDER'ların tüm child FOLDER'larını gezmemiz gerekiyor.
-                //TODO: Tüm file tree'yi yazdırmalıyız. Şu an sadece root folder yazdırıyoruz.
                 cmisObjects.add(new FolderDto((Folder) nextObject));
             }
         }
@@ -185,6 +187,68 @@ public class CmisServiceImp implements CmisService{
             object.getProperties().forEach(property -> properties.put(property.getId(),property.getValueAsString()));
             properties.replace(PropertyIds.NAME,newName);
             return object.updateProperties(properties);
+        }
+        return null;
+    }
+
+    @Override
+    public List<CmisObjectDto> testGetAllObjects() {
+        checkTokenForNewSessionPool();
+        List<CmisObjectDto> cmisObjects = new ArrayList<>();
+        for (CmisObject nextObject : session.getRootFolder().getChildren()) {
+            String propertyValue = nextObject.getPropertyValue(PropertyIds.OBJECT_TYPE_ID);
+            GregorianCalendar gregorianLastEditDate = (GregorianCalendar) nextObject.getPropertyValue(PropertyIds.LAST_MODIFICATION_DATE);
+            String lastEditDate = gregorianLastEditDate.toZonedDateTime().format(DATE_TIME_FORMATTER);
+            if (DOCUMENT.equals(propertyValue)) {
+                DocumentDto documentDto = new DocumentDto((Document) nextObject);
+                documentDto.setLastEditDate(lastEditDate);
+                cmisObjects.add(documentDto);
+            } else if (FOLDER.equals(propertyValue)) {
+                FolderDto folderDto = new FolderDto((Folder) nextObject);
+                folderDto.setLastEditDate(lastEditDate);
+                cmisObjects.add(folderDto);
+            }
+        }
+        return cmisObjects;
+    }
+
+    @Override
+    public FolderDto testGetFolderByObjectId(String objectId) {
+        checkTokenForNewSessionPool();
+        ObjectId id = new ObjectIdImpl(objectId);
+        if(session.getObject(id).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(FOLDER)) {
+            CmisObject cmisObject = session.getObject(id);
+            FolderDto folderDto = new FolderDto((Folder) cmisObject);
+            GregorianCalendar gregorianLastEditDate = (GregorianCalendar) cmisObject.getPropertyValue(PropertyIds.LAST_MODIFICATION_DATE);
+            String lastEditDate = gregorianLastEditDate.toZonedDateTime().format(DATE_TIME_FORMATTER);
+            folderDto.setLastEditDate(lastEditDate);
+            return folderDto;
+        }
+        return null;
+    }
+
+    private void resolveFolderTree(Folder folder, List<CmisObjectDto> resultList ,int depth, int count){
+        if(count<=depth && folder.getChildren().getTotalNumItems()>0){
+            for (CmisObject cmisObject : folder.getChildren()) {
+                resultList.add(new CmisObjectDto(cmisObject));
+                if (cmisObject instanceof Folder) {
+                    resolveFolderTree(folder, resultList, depth, count++);
+                }
+            }
+        }
+    }
+
+    @Override
+    public DocumentDto testGetDocumentByObjectId(String objectId) {
+        checkTokenForNewSessionPool();
+        ObjectId id = new ObjectIdImpl(objectId);
+        if(session.getObject(id).getPropertyValue(PropertyIds.OBJECT_TYPE_ID).equals(DOCUMENT)) {
+            CmisObject cmisObject = session.getObject(id);
+            DocumentDto documentDto = new DocumentDto((Document) cmisObject);
+            GregorianCalendar gregorianLastEditDate = (GregorianCalendar) cmisObject.getPropertyValue(PropertyIds.LAST_MODIFICATION_DATE);
+            String lastEditDate = gregorianLastEditDate.toZonedDateTime().format(DATE_TIME_FORMATTER);
+            documentDto.setLastEditDate(lastEditDate);
+            return documentDto;
         }
         return null;
     }

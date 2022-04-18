@@ -9,6 +9,7 @@ import org.apache.chemistry.opencmis.client.api.CmisObject;
 public class CmisObjectDto {
     private String id;
     private String name;
+    private String lastEditDate;
 
     public CmisObjectDto(String id, String name) {
         this.id = id;
