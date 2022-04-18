@@ -3,6 +3,7 @@ package com.solviads.cmis.business;
 import com.solviads.cmis.dto.CmisObjectDto;
 import com.solviads.cmis.dto.*;
 import com.solviads.cmis.factory.CMISManager;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.runtime.ObjectIdImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CmisServiceImp implements CmisService{
 
     private static final String DOCUMENT = "cmis:document";
