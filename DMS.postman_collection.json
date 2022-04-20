@@ -1,0 +1,263 @@
+{
+	"info": {
+		"_postman_id": "21fa6760-8051-4dc9-bd16-f7513a0ecbe2",
+		"name": "DMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Folders & Docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9091/api/dms/getAllFoldersAndDocs",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"dms",
+						"getAllFoldersAndDocs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Document",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "objectId",
+							"value": "qKtEbmaIV6dddy9CBnUfZXL5g8eEEt8WvfMDRI91CDQ",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9091/api/dms/document",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"dms",
+						"document"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Folder",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "objectId",
+							"value": "qKtEbmaIV6dddy9CBnUfZXL5g8eEEt8WvfMDRI91CDQ",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9091/api/dms/folder",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"dms",
+						"folder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Document Content",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "objectId",
+							"value": "qKtEbmaIV6dddy9CBnUfZXL5g8eEEt8WvfMDRI91CDQ",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9091/api/dms/document-content",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"dms",
+						"document-content"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Document",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/solvia/Desktop/Git - Deploy/KymaDeployment.pdf"
+						},
+						{
+							"key": "hostFolderId",
+							"value": "EmAp5q7aZhWkhNW91TmD_svSJ4bM0WnbMWP-oDWh3Eo",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9091/api/dms/document",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"dms",
+						"document"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Object",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "objectId",
+							"value": "EmAp5q7aZhWkhNW91TmD_svSJ4bM0WnbMWP-oDWh3Eo",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "TestFolderName",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9091/api/dms/update-object",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"dms",
+						"update-object"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Folder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "folderName",
+							"value": "TestFolder",
+							"type": "text"
+						},
+						{
+							"key": "hostFolderId",
+							"value": "EmAp5q7aZhWkhNW91TmD_svSJ4bM0WnbMWP-oDWh3Eo",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9091/api/dms/folder",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"dms",
+						"folder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Object",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "objectId",
+							"value": "qKtEbmaIV6dddy9CBnUfZXL5g8eEEt8WvfMDRI91CDQ",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:9091/api/dms/delete",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"dms",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
