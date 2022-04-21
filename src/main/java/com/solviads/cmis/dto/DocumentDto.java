@@ -19,4 +19,10 @@ public class DocumentDto extends CmisObjectDto {
         super(document.getId(), document.getName());
         this.paths = document.getPaths();
     }
+
+    public DocumentDto(String id, String name){
+        super(id, name);
+    }
+
+
 }

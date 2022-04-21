@@ -26,6 +26,26 @@
 			"response": []
 		},
 		{
+			"name": "Get All Docs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9091/api/dms/repository-docs",
+					"host": [
+						"localhost"
+					],
+					"port": "9091",
+					"path": [
+						"api",
+						"dms",
+						"repository-docs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Document",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
