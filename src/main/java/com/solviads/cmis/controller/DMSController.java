@@ -95,4 +95,13 @@ public final class DMSController {
         return ResponseEntity.badRequest().build();
     }
 
+    @GetMapping("/repository-docs")
+    public ResponseEntity<List<DocumentDto>> getAllDocumentsInsideRepository(){
+        List<DocumentDto> documentDtoList = cmisService.getAllDocumentsInsideRepository();
+        if(!documentDtoList.isEmpty()){
+            return ResponseEntity.ok(documentDtoList);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
 }
