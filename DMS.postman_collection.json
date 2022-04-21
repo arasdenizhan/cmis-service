@@ -11,14 +11,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:9091/api/dms/getAllFoldersAndDocs",
+					"raw": "{{urlKyma}}/getAllFoldersAndDocs",
 					"host": [
-						"localhost"
+						"{{urlKyma}}"
 					],
-					"port": "9091",
 					"path": [
-						"api",
-						"dms",
 						"getAllFoldersAndDocs"
 					]
 				}
@@ -31,14 +28,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:9091/api/dms/repository-docs",
+					"raw": "{{urlKyma}}/repository-docs",
 					"host": [
-						"localhost"
+						"{{urlKyma}}"
 					],
-					"port": "9091",
 					"path": [
-						"api",
-						"dms",
 						"repository-docs"
 					]
 				}
@@ -64,14 +58,11 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:9091/api/dms/document",
+					"raw": "{{urlKyma}}/document",
 					"host": [
-						"localhost"
+						"{{urlKyma}}"
 					],
-					"port": "9091",
 					"path": [
-						"api",
-						"dms",
 						"document"
 					]
 				}
@@ -97,14 +88,11 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:9091/api/dms/folder",
+					"raw": "{{urlKyma}}/folder",
 					"host": [
-						"localhost"
+						"{{urlKyma}}"
 					],
-					"port": "9091",
 					"path": [
-						"api",
-						"dms",
 						"folder"
 					]
 				}
@@ -130,14 +118,11 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:9091/api/dms/document-content",
+					"raw": "{{urlKyma}}/document-content",
 					"host": [
-						"localhost"
+						"{{urlKyma}}"
 					],
-					"port": "9091",
 					"path": [
-						"api",
-						"dms",
 						"document-content"
 					]
 				}
@@ -165,14 +150,11 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:9091/api/dms/document",
+					"raw": "{{urlKyma}}/document",
 					"host": [
-						"localhost"
+						"{{urlKyma}}"
 					],
-					"port": "9091",
 					"path": [
-						"api",
-						"dms",
 						"document"
 					]
 				}
@@ -200,14 +182,11 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:9091/api/dms/update-object",
+					"raw": "{{urlKyma}}/update-object",
 					"host": [
-						"localhost"
+						"{{urlKyma}}"
 					],
-					"port": "9091",
 					"path": [
-						"api",
-						"dms",
 						"update-object"
 					]
 				}
@@ -235,14 +214,11 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:9091/api/dms/folder",
+					"raw": "{{urlKyma}}/folder",
 					"host": [
-						"localhost"
+						"{{urlKyma}}"
 					],
-					"port": "9091",
 					"path": [
-						"api",
-						"dms",
 						"folder"
 					]
 				}
@@ -265,19 +241,46 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:9091/api/dms/delete",
+					"raw": "{{urlKyma}}/delete",
 					"host": [
-						"localhost"
+						"{{urlKyma}}"
 					],
-					"port": "9091",
 					"path": [
-						"api",
-						"dms",
 						"delete"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "urlKyma",
+			"value": "https://cmis.c-6e8bd7c.kyma.ondemand.com/api/dms"
+		},
+		{
+			"key": "urlLocal",
+			"value": "http:localhost:9091/api/dms"
 		}
 	]
 }
